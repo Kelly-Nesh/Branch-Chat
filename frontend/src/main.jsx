@@ -8,13 +8,13 @@ import Agent, { Login } from "./components/agent.jsx";
 
 const router = createBrowserRouter([
   { path: "", element: <App /> },
-  { path: "chat/:group_name/", element: <Chat /> },
+  { path: "chat/:group_name/", element: <Chat caller="user"/> },
   {
     path: "agent/",
     children: [
       { path: "", element: <Login /> },
       { path: "support", element: <Agent /> },
-      { path: "support/:group_name/", element: <Chat /> },
+      { path: "support/:group_name/", element: <Chat caller="agent"/> },
     ],
   },
 ]);
