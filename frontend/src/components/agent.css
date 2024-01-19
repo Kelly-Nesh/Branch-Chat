@@ -1,30 +1,45 @@
 .agent-menu {
   width: max-content;
-  right: 2px;
+  right: 0;
+  padding-right: 0;
   overflow: hidden;
 }
 .menu-bars {
   display: none;
 }
+.header {
+  color: #293a5f;
+}
+.menu {
+  padding: 5px 1rem;
+  width: 200px;
+    height: 90vh;
+  background-color: #19355e;
+}
 @media screen and (max-width: 767px) {
   .header {
-    width: 93%;
+    width: 90%;
   }
   .menu-bars {
     display: inline-block;
     width: 40px;
     height: 30px;
     padding: 5px;
+    cursor: pointer;
   }
   .menu-bars span {
     display: block;
     width: 100%;
     height: 4px;
     margin-bottom: 6px;
-    background-color: darkblue;
+    background-color: #19355e;
   }
-  .agent-menu div {
+  .menu-active {
+    right: 0% !important;
+  }
+  .agent-menu .menu {
     position: relative;
     right: -120%;
+    transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
   }
 }
