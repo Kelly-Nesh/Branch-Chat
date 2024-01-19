@@ -1,0 +1,30 @@
+.agent-menu {
+  width: max-content;
+  right: 2px;
+  overflow: hidden;
+}
+.menu-bars {
+  display: none;
+}
+@media screen and (max-width: 767px) {
+  .header {
+    width: 93%;
+  }
+  .menu-bars {
+    display: inline-block;
+    width: 40px;
+    height: 30px;
+    padding: 5px;
+  }
+  .menu-bars span {
+    display: block;
+    width: 100%;
+    height: 4px;
+    margin-bottom: 6px;
+    background-color: darkblue;
+  }
+  .agent-menu div {
+    position: relative;
+    right: -120%;
+  }
+}
