@@ -5,6 +5,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Toast from "react-bootstrap/Toast";
+import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -35,11 +36,12 @@ function App() {
       timestamp: timestamp,
       message: message,
     };
-    data.group_name = "group" + data.user_id;
+    data.message_by = "user_" + data.user_id;
+    data.group_name = "group_" + data.user_id;
     axios
       .post(backend, data)
       .then(() => {
-        localStorage.setItem("user_data", JSON.stringify(data));
+        localStorage.setItem("msg_data", JSON.stringify(data));
         data.group_name
           ? navigate(`chat/${data.group_name}/`)
           : setAlert("Error. Try again.");
@@ -53,14 +55,20 @@ function App() {
       {alert ? (
         <Row>
           <Col>
-            <Toast variant="danger" className="d-inline-block m-1">
-              <Toast.Body>{alert}</Toast.Body>
+            <Toast
+              bg="danger"
+              className="d-block m-1 mx-auto"
+            >
+              <Toast.Body className="text-white">{alert}</Toast.Body>
             </Toast>
           </Col>
         </Row>
-      ) : (
-        ""
-      )}
+      ) : null}
+      <Row>
+        <Col sm={6} className="mx-auto mb-3">
+          <h3>Need help? Send us a message and talk to an agent.</h3>
+        </Col>
+      </Row>
       <Row>
         <Col sm={6} className="mx-auto">
           <Form>
@@ -74,7 +82,7 @@ function App() {
               }}
             >
               <option value="loan application">Loan Application</option>
-              <option value="loan repayment">Loan Application</option>
+              <option value="loan repayment">Loan Repayment</option>
               <option value="account">Account</option>
               <option defaultValue={true} value="other">
                 Other
@@ -93,12 +101,16 @@ function App() {
               }}
             />
             <br />
-            <Form.Control
+            <Button
               id="topic-submit"
               type="button"
               value="Submit"
+              variant="primary"
               onClick={submitTopic}
-            />
+              className="d-block mx-auto"
+            >
+              Send
+            </Button>
           </Form>
         </Col>
       </Row>
