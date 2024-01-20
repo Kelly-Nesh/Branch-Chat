@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import axios from "axios";
 import React, { useEffect } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
@@ -23,7 +23,6 @@ const Agent = () => {
     setAgent(localStorage.getItem("emp_id"));
     axios.get(backend).then((r) => {
       setChats(r.data);
-      // console.log(r.data[0].user_id)
     });
     /* called after intervals */
     retrieve_chats();
@@ -46,7 +45,6 @@ const Agent = () => {
     [
       "Clear filter",
       () => {
-        cl(hasAgent, filter);
         setFilter(null), setHasAgent(false);
       },
     ],
@@ -137,21 +135,25 @@ function ChatListFormat({ chats, filter, hasAgent }) {
   function setData(topic, user, conversation_id) {
     localStorage.setItem("topic", topic);
     localStorage.setItem("myuser", user);
-    // c(localStorage.getItem("myuser"));
     navigate(conversation_id);
   }
-  // console.log(chats)
   return filtered_chats.map((e, idx) => {
+    let msg = e.message;
+    msg = msg.length > 20 ? msg.slice(0, 90) + "..." : msg;
+    // console.log(e.hasAgent)
     return (
-      <Col xs={6} lg={4} key={idx}>
-        <Card style={{ width: "100%" }}>
+      <Col xs={6} lg={4} key={idx} className="mt-3">
+        <Card
+          style={{ width: "100%" }}
+          className={`${e.hasAgent ? "hasagent" : "noagent"}`}
+        >
           <Card.Body>
             <Card.Title>{e.topic}</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">
-              Customer: {e.sender} {e.hasAgent}
+              Customer: {e.sender}
             </Card.Subtitle>
             <h1>{e.user_id}</h1>
-            <Card.Text>{e.message}</Card.Text>
+            <Card.Text>{msg}</Card.Text>
             <Card.Subtitle className="mb-2 text-muted">
               {timestamp(e.timestamp)}
             </Card.Subtitle>
