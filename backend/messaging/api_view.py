@@ -13,19 +13,15 @@ class MessageViewSet(ModelViewSet):
         new = []
         convo_ids = []
         for i in queryset:
-            # if i.hasAgent is False and i.conversation_id in convo_ids:
-            #     i.hasAgent = True
             if i.conversation_id not in convo_ids:
                 new.append(i)
                 convo_ids.append(i.conversation_id)
-            
 
         return MessageSerializer(instance=new, many=True).data
 
     def create(self, request):
-        msg = Message.objects.create(
-            **request.data)
-        print(msg.hasAgent)
+        msg = Message.objects.create(**request.data)
+        # print(msg.hasAgent)
         conversation_id = msg.conversation_id
         return Response({"conversation_id": conversation_id})
 
