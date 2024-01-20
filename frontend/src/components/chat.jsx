@@ -1,83 +1,128 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import axios from "axios";
-import { timestamp } from "../App";
+import { MenuBlock, Navigator, timestamp } from "../App";
+import "./chat.css";
 
+import {
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBCard,
+  MDBCardHeader,
+  MDBCardBody,
+  MDBCardFooter,
+} from "mdb-react-ui-kit";
 /* Contains code for the Chat page.
     Posts chat messages to the backend
     Connects, receives and sends data from the backend
       websocket
   */
-const cl = console.log;
-/* get previous messages from db
- */
-function getMessages(url, setMessagelog, setAgent) {
+const cl = console.log
+function Chatformat({ chats, caller, messageref }) {
+  const mapped = chats.map((chat, idx) => {
+    if (caller === chat.sender) {
+      return (
+        <div key={idx} className="d-flex flex-row justify-content-end">
+          <div>
+            <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
+              {chat.message}
+            </p>
+            <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
+              {chat.timestamp.split(" ")[1]}
+            </p>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div key={idx} className="d-flex flex-row justify-content-start mb-4">
+          <div>
+            <p
+              className="small p-2 ms-3 mb-1 rounded-3"
+              style={{ backgroundColor: "#f5f6f7" }}
+            >
+              {chat.message}
+            </p>
+            <p className="small ms-3 mb-3 rounded-3 text-muted">
+              {chat.timestamp.split(" ")[1]}
+            </p>
+          </div>
+        </div>
+      );
+    }
+  });
+  mapped.push(<small id="last" key={"last"} ref={messageref}></small>);
+  return mapped;
+}
+
+function createWebSocket(chat_id) {
+  let ws_url = "ws://localhost:8000/ws/support/" + chat_id + "/";
+  return useWebSocket(ws_url, {
+
+    shouldReconnect: () => {
+      // setShow(true);
+      return true;
+    },
+    reconnectAttempts: 5,
+  });
+}
+
+function getChatHistory(url, setChatLog) {
   axios
     .get(url)
     .then((e) => {
-      setMessagelog(e.data);
+      setChatLog(e.data);
     })
     .catch((e) => {
       console.log(e.status);
     });
 }
 
-const Chat = ({ caller }) => {
-  const { convo_id } = useParams();
-  let ws_url = "ws://localhost:8000/ws/support/" + convo_id + "/";
-  const ref = useRef();
-  const lastmsgref = useRef();
-  const [messagelog, setMessagelog] = useState([]);
-  const navigate = useNavigate();
-  const [show, setShow] = useState(true);
-  const [alert, setAlert] = useState(false);
-  const [sender, setSender] = useState("user");
-  const [agent, setAgent] = useState(false);
+export default function Chat({ caller }) {
   const [end, setEnd] = useState(false);
-  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
-    ws_url,
-    {
-      onOpen: () => {
-        setShow(true);
-      },
-      shouldReconnect: () => {
-        setShow(true);
-        return true;
-      },
-      reconnectAttempts: 5,
-    }
+  const [msg_alert, setAlert] = useState();
+  const inputref = useRef();
+  const messageref = useRef();
+  const backend = "http://localhost:8000/api/";
+  const [chatlog, setChatLog] = useState([]);
+  const chat_id = useParams().chat_id;
+  const [show, setShow] = useState(false);
+  const [sender, setSender] = useState(localStorage.getItem("sender"));
+  const navigate = useNavigate();
+  const { sendJsonMessage, lastJsonMessage, readyState } = useCallback(
+    createWebSocket(chat_id)
   );
 
-  const backend = "http://localhost:8000/api/";
-
   useEffect(() => {
-    if (lastmsgref.current) {
-      lastmsgref.current.scrollIntoView();
-    }
     if (lastJsonMessage !== null) {
-      setMessagelog((prev) => prev.concat(lastJsonMessage));
-      setEnd(lastJsonMessage.complete);
-      setAgent(lastJsonMessage.hasAgent);
-      setShow(false);
+      if (lastJsonMessage.complete) {
+        setEnd(lastJsonMessage.complete);
+        return;
+      }
+      setChatLog((prev) => prev.concat(lastJsonMessage));
+      if (messageref.current) {
+        messageref.current.scrollIntoView();
+      }
     } else {
       /* if new browser agent get chatlog from database */
-      const url = `${backend}conv/history/?convo_id=${convo_id}`;
-      getMessages(url, setMessagelog, setAgent);
-
-      setShow(false);
+      const url = `${backend}chat/history/?chat_id=${chat_id}`;
+      getChatHistory(url, setChatLog);
     }
-  }, [lastJsonMessage, setMessagelog]);
+  }, [lastJsonMessage, setChatLog]);
 
-  const handleSend = useCallback((e) => {
-    if (!ref.current.value) {
+  const handleSend = (e) => {
+    e.preventDefault();
+    if (end) {
+      sendJsonMessage({ complete: true });
+      return;
+    }
+    if (!inputref.current.value) {
       setAlert(true);
       return;
     }
@@ -87,24 +132,26 @@ const Chat = ({ caller }) => {
         ? localStorage.getItem("customer_id")
         : localStorage.getItem("emp_id");
     setSender(sender);
-    const agentissender = !sender.startsWith("user");
+    cl(sender);
+    const hasAgent =
+      !sender.startsWith("user") || chatlog[chatlog.length - 1].hasAgent;
     const data = {
-      conversation_id: convo_id,
+      conversation_id: chat_id,
       topic: topic,
       timestamp: timestamp(),
-      message: ref.current.value,
+      message: inputref.current.value,
       sender: sender,
       complete: end,
-      hasAgent: agentissender || agent,
+      hasAgent: hasAgent,
     };
+    sendJsonMessage(data);
     axios.post(backend + "message/", data).catch((e) => {
       console.log(e);
     });
-    ref.current.value = "";
-    sendJsonMessage(data);
-  });
+    inputref.current.value = "";
+  };
   const handleEnd = () => {
-    const finalmessage = messagelog[messagelog.length - 1].conversation_id;
+    const finalmessage = chatlog[chatlog.length - 1].conversation_id;
     axios
       .patch(backend + `message/${finalmessage}/`)
       .then((res) => {
@@ -116,70 +163,56 @@ const Chat = ({ caller }) => {
     sendJsonMessage({ complete: true });
     navigate(-1);
   };
-  let connectionStatus = {
-    [ReadyState.CONNECTING]: "Connecting...",
-    [ReadyState.OPEN]: "Connected.",
-    [ReadyState.CLOSING]: "Disconnecting...",
-    [ReadyState.CLOSED]: "Disconnected.",
-  }[readyState];
-
-  function nav() {
-    navigate("/");
-  }
   return (
-    <Container
-      style={{ maxWidth: "80%" }}
-      className="mx-auto place-items-center"
-    >
-      {connectionStatus && show && (
-        <Alert className="alert">{connectionStatus}</Alert>
-      )}
-      {end && (
-        <Alert className="alert" variant="danger">
-          Conversation has ended
-        </Alert>
-      )}
-      {alert && (
-        <Alert variant="warning" className="alert">
-          Write a message to send
-        </Alert>
-      )}
-      <Row
-        className="justify-content-center overflow-auto"
-        style={{ height: "70svh" }}
-      >
-        <Col md={6} className="d-flex flex-column mb-2">
-          {/* {lastJsonMessage ? <p>{lastJsonMessage.data}</p> : null} */}
-          <Chatformat
-            messages={messagelog}
-            caller={caller}
-            lastmsgref={lastmsgref}
-          />
-        </Col>
-      </Row>
-      <br />
-      {end === false && (
-        <Row
-          className="justify-content-center position-relative"
-          style={{ bottom: 0 }}
-        >
-          <Col md={6} className="text-center">
-            <Form.Control
-              as="textarea"
-              placeholder="write a message"
-              ref={ref}
-              className="d-block mx-auto mb-2"
-            />
-            <div className="d-flex justify-content-evenly">
-              {sender.startsWith("user") === false && (
+    <MDBContainer fluid className="py-1" style={{ backgroundColor: "#eee" }}>
+      <MDBRow className="d-flex justify-content-center min-vh-100">
+        <Navigator name={sender} func={setShow} flag={show} />
+        <MDBCol md="10" lg="8" xl="6">
+          <MDBCard id="chat2" style={{ borderRadius: "15px" }}>
+            <MDBCardHeader className="d-flex justify-content-between align-items-center p-3">
+              <h5 className="mb-0">BranchChat | {sender}</h5>
+              {sender && sender.startsWith("user") === false && (
                 <Button
                   variant="primary"
                   disabled={readyState !== ReadyState.OPEN}
                   onClick={handleEnd}
                 >
-                  End Chat
+                  End conversation
                 </Button>
               )}
+            </MDBCardHeader>
+            <Container
+              className="overflow-scroll"
+              style={{ position: "relative", height: "60svh" }}
+            >
+              <MDBCardBody>
+                <>
+                  {end && (
+                    <Alert className="alert" variant="danger">
+                      Conversation closed.
+                    </Alert>
+                  )}
+                  {msg_alert && (
+                    <Alert variant="warning" className="alert">
+                      Write a message to send
+                    </Alert>
+                  )}
+                </>
+                <Chatformat
+                  chats={chatlog}
+                  caller={sender}
+                  messageref={messageref}
+                />
+              </MDBCardBody>
+            </Container>
+            <MDBCardFooter className="text-muted d-flex justify-content-start align-items-center p-3">
+              <input
+                type="text"
+                className="form-control form-control-lg"
+                id="exampleFormControlInput1"
+                placeholder="Type message"
+                ref={inputref}
+              ></input>
               <Button
                 variant="primary"
                 disabled={readyState !== ReadyState.OPEN}
@@ -187,30 +220,11 @@ const Chat = ({ caller }) => {
               >
                 Send
               </Button>
-            </div>
-          </Col>
-        </Row>
-      )}
-    </Container>
+            </MDBCardFooter>
+          </MDBCard>
+        </MDBCol>
+        <MenuBlock show={show} caller={caller} />
+      </MDBRow>
+    </MDBContainer>
   );
-};
-
-export default Chat;
-function Chatformat({ messages, caller, lastmsgref }) {
-  let align;
-  const mapped = messages.map((m, idx) => {
-    const sd = m.sender ? m.sender : "";
-    align =
-      (caller === "user" && sd.startsWith("user")) ||
-      (caller === "agent" && sd.startsWith("user") === false)
-        ? "end"
-        : "start";
-    return (
-      <p className={`text-${align}`} key={idx}>
-        {m.message}
-      </p>
-    );
-  });
-  mapped.push(<p id="last" key={"last"} ref={lastmsgref}></p>);
-  return mapped;
 }
