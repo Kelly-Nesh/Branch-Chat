@@ -13,8 +13,20 @@
 .menu {
   padding: 5px 1rem;
   width: 200px;
-    height: 90vh;
+  height: 90vh;
   background-color: #19355e;
+}
+.hasagent {
+  background-color: lightgreen;
+}
+.noagent {
+  background-color: lightcyan;
+}
+.alert {
+  position: fixed;
+  top: 0;
+  left: 1rem;
+  width: max-content;
 }
 @media screen and (max-width: 767px) {
   .header {
