@@ -10,13 +10,13 @@ import { AgentForm, CustomerForm } from "./components/forms.jsx";
 const router = createBrowserRouter([
   { path: "", element: <CustomerForm /> },
   { path: "chat/", element: <App /> },
-  { path: "chat/:convo_id/", element: <Chat caller="user" /> },
+  { path: "chat/:chat_id/", element: <Chat caller="user" /> },
   {
     path: "agent/",
     children: [
       { path: "", element: <AgentForm /> },
       { path: "support/", element: <Agent /> },
-      { path: "support/:convo_id/", element: <Chat caller="agent" /> },
+      { path: "support/:chat_id/", element: <Chat caller="agent" /> },
     ],
   },
 ]);

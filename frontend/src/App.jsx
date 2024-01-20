@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -8,6 +8,7 @@ import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import logo from "./assets/logo_mfb.png";
 
 export const backend = "http://localhost:8000/api/message/";
 
@@ -25,6 +26,7 @@ function App() {
   const [message, setMessage] = useState();
   const [alert, setAlert] = useState();
   const navigate = useNavigate();
+  const [show, setShow] = useState(false);
 
   async function submitTopic(e) {
     e.preventDefault();
@@ -51,16 +53,18 @@ function App() {
   }
   return (
     <Container className="mt-3">
-      {alert && (
-        <Row>
-          <Col>
-            <Alert variant="danger" className="d-block m-1 mx-auto">
-              {alert}
-            </Alert>
-          </Col>
-        </Row>
-      )}
+      <Navigator name={""} func={setShow} flag={show} />
+
       <Row>
+        {alert && (
+          <Row>
+            <Col>
+              <Alert variant="danger" className="d-block m-1 mx-auto">
+                {alert}
+              </Alert>
+            </Col>
+          </Row>
+        )}
         <Col sm={6} className="mx-auto mb-3">
           <h3>Need help? Talk to an agent.</h3>
         </Col>
@@ -110,8 +114,64 @@ function App() {
             </Button>
           </Form>
         </Col>
+        <MenuBlock show={show} />
       </Row>
     </Container>
   );
 }
 export default App;
+
+export function Navigator(props) {
+  return (
+    <Row
+      className="my-2 mx-2 justify-content-center"
+      style={{ background: "white", maxHeight: "6rem" }}
+    >
+      <img style={{ height: "4rem", width: "15rem" }} src={logo} />
+      <h3 className="d-inline header">
+        {" "}
+        {props.name ? " | " + props.name : ""}
+      </h3>
+      <div className="menu-bars" onClick={() => props.func(!props.flag)}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </Row>
+  );
+}
+const cl = console.log;
+export function MenuBlock({ show }) {
+  const navigate = useNavigate();
+  let paths = [
+    ["Login", "/"],
+    ["Agent", "/agent/"],
+  ];
+
+  return (
+    <Col
+      md={3}
+      lg={2}
+      className={`position-fixed menu-block ${show ? "menu-active" : ""}`}
+    >
+      <div className={`menu `}>
+        <h5 style={{ color: "#4fcdff" }}>MENU</h5>
+        <div className="ps-2">
+          {paths.map(([name, path]) => {
+            return (
+              <p
+                key={name}
+                onClick={() => {
+                  navigate(path);
+                }}
+                style={{ color: "#ffffff", cursor: "pointer" }}
+              >
+                {name}
+              </p>
+            );
+          })}
+        </div>
+      </div>
+    </Col>
+  );
+}
