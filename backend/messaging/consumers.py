@@ -19,12 +19,10 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         """Receives"""
         text_json = json.loads(text_data)
-        print(type(text_data), type(text_json))
+        # print(type(text_data), type(text_json))
         text_json["type"] = "group_message"
 
-
         atos(self.channel_layer.group_send)(self.group_name, text_json)
-        print(text_json)
 
     def group_message(self, event):
-        self.send(text_data=json.dumps({'message': event['message']}))
+        self.send(text_data=json.dumps(event))
