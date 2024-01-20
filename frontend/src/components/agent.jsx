@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import axios from "axios";
 import React, { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
-import Accordion from "react-bootstrap/Accordion";
 import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
 import "./agent.css";
 import { backend } from "../App";
 
@@ -15,12 +15,15 @@ const Agent = () => {
   const [interval, setnterval] = useState(5000);
   const [filter, setFilter] = useState();
   const [show, setShow] = useState(false);
-  const ref = useRef();
+  const [agent, setAgent] = useState();
+  const [hasAgent, setHasAgent] = useState(false);
 
   useEffect(() => {
     /* called immediately after render */
+    setAgent(localStorage.getItem("emp_id"));
     axios.get(backend).then((r) => {
       setChats(r.data);
+      // console.log(r.data[0].user_id)
     });
     /* called after intervals */
     retrieve_chats();
@@ -40,12 +43,18 @@ const Agent = () => {
     ["Loan repayment", "repayment"],
     ["Account", "account"],
     ["Other", "other"],
-    ["Clear filter", null],
+    [
+      "Clear filter",
+      () => {
+        cl(hasAgent, filter);
+        setFilter(null), setHasAgent(false);
+      },
+    ],
   ];
   return (
     <Container fluid>
       <Row className="my-2 mx-2">
-        <h2 className="d-inline header">Branch|Agent support</h2>
+        <h2 className="d-inline header">Branch|Agent|{agent}</h2>
         <div className="menu-bars" onClick={() => setShow(!show)}>
           <span></span>
           <span></span>
@@ -56,7 +65,11 @@ const Agent = () => {
         <Col xs={12} md={9} lg={10}>
           <Container fluid>
             <Row className="gx-2 gy-2">
-              <ChatListFormat chats={chats} filter={filter} />
+              <ChatListFormat
+                chats={chats}
+                filter={filter}
+                hasAgent={hasAgent}
+              />
             </Row>
           </Container>
         </Col>
@@ -77,6 +90,15 @@ const Agent = () => {
                   </p>
                 );
               })}
+              <p
+                onClick={() => {
+                  setFilter();
+                  setHasAgent(true);
+                }}
+                style={{ color: "#ffffff", cursor: "pointer" }}
+              >
+                Without Agents
+              </p>
             </div>
           </div>
         </Col>
@@ -86,18 +108,22 @@ const Agent = () => {
 };
 
 export default Agent;
-export const Login = () => {
-  return <Link to="support/">Login</Link>;
-};
-const c = console.log;
-function ChatListFormat({ chats, filter }) {
-  const filtered_chats = filter
-    ? chats.filter((c) => {
-        const topic = c.topic;
-        // console.log(topic.includes(filter), topic, filter)
-        return topic.includes(filter);
-      })
-    : chats;
+
+const cl = console.log;
+
+function ChatListFormat({ chats, filter, hasAgent }) {
+  const navigate = useNavigate();
+  let filtered_chats;
+  if (filter) {
+    filtered_chats = chats.filter((c) => {
+      return c.topic.includes(filter);
+    });
+  } else if (hasAgent) {
+    filtered_chats = chats.filter((c) => {
+      return !c.hasAgent;
+    });
+  } else filtered_chats = chats;
+
   const timestamp = (time) => {
     const minute = 1000 * 60;
     let now = Date.now();
@@ -107,6 +133,14 @@ function ChatListFormat({ chats, filter }) {
     const elapsed_min = now.toString().split(".")[0] + "m ago";
     return elapsed_min;
   };
+
+  function setData(topic, user, conversation_id) {
+    localStorage.setItem("topic", topic);
+    localStorage.setItem("myuser", user);
+    // c(localStorage.getItem("myuser"));
+    navigate(conversation_id);
+  }
+  // console.log(chats)
   return filtered_chats.map((e, idx) => {
     return (
       <Col xs={6} lg={4} key={idx}>
@@ -114,13 +148,21 @@ function ChatListFormat({ chats, filter }) {
           <Card.Body>
             <Card.Title>{e.topic}</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">
-              Agent: {e.agent ? e.agent : "None"}
+              Customer: {e.sender} {e.hasAgent}
             </Card.Subtitle>
+            <h1>{e.user_id}</h1>
             <Card.Text>{e.message}</Card.Text>
             <Card.Subtitle className="mb-2 text-muted">
               {timestamp(e.timestamp)}
             </Card.Subtitle>
-            <Card.Link href={e.group_name}>Respond</Card.Link>
+            <Button
+              variant="light"
+              onClick={() => {
+                setData(e.topic, e.user_id, e.conversation_id);
+              }}
+            >
+              Respond
+            </Button>
           </Card.Body>
         </Card>
       </Col>
