@@ -4,25 +4,27 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Toast from "react-bootstrap/Toast";
+import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const backend = "http://localhost:8000/api/message/";
 
-function App() {
-  const [topic, setTopic] = useState();
-  const [message, setMessage] = useState();
-  const [alert, setAlert] = useState();
-  const navigate = useNavigate();
-
+export function timestamp() {
   let today = new Date();
   const date =
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
   const time =
     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-  const timestamp = date + " " + time;
+  return date + " " + time;
+}
+
+function App() {
+  const [topic, setTopic] = useState();
+  const [message, setMessage] = useState();
+  const [alert, setAlert] = useState();
+  const navigate = useNavigate();
 
   async function submitTopic(e) {
     e.preventDefault();
@@ -31,42 +33,36 @@ function App() {
       return;
     }
     const data = {
-      user_id: Math.floor(Math.random() * 100) + 1,
+      timestamp: timestamp(),
+      sender: localStorage.getItem("customer_id"),
       topic: topic,
-      timestamp: timestamp,
       message: message,
     };
-    data.message_by = "user_" + data.user_id;
-    data.group_name = "group_" + data.user_id;
+    localStorage.setItem("topic", topic);
+    localStorage.setItem("sender", data.sender);
     axios
       .post(backend, data)
-      .then(() => {
-        localStorage.setItem("msg_data", JSON.stringify(data));
-        data.group_name
-          ? navigate(`chat/${data.group_name}/`)
-          : setAlert("Error. Try again.");
+      .then((resp) => {
+        navigate(`${resp.data.conversation_id}/`);
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e.data);
       });
   }
   return (
     <Container className="mt-3">
-      {alert ? (
+      {alert && (
         <Row>
           <Col>
-            <Toast
-              bg="danger"
-              className="d-block m-1 mx-auto"
-            >
-              <Toast.Body className="text-white">{alert}</Toast.Body>
-            </Toast>
+            <Alert variant="danger" className="d-block m-1 mx-auto">
+              {alert}
+            </Alert>
           </Col>
         </Row>
-      ) : null}
+      )}
       <Row>
         <Col sm={6} className="mx-auto mb-3">
-          <h3>Need help? Send us a message and talk to an agent.</h3>
+          <h3>Need help? Talk to an agent.</h3>
         </Col>
       </Row>
       <Row>
@@ -81,6 +77,7 @@ function App() {
                 alert ? setAlert() : "";
               }}
             >
+              <option>Select topic</option>
               <option value="loan application">Loan Application</option>
               <option value="loan repayment">Loan Repayment</option>
               <option value="account">Account</option>
