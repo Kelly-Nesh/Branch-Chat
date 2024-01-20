@@ -7,7 +7,7 @@ from messaging.api_view import (MessageViewSet, MessageRetrieveHistory, Customer
 
 router = SimpleRouter()
 router.register("message", MessageViewSet, basename="messaging")
-router.register("conv/history", MessageRetrieveHistory,
+router.register("chat/history", MessageRetrieveHistory,
                 basename="messaging")
 router.register("customer", CustomerModelViewSet, basename='messaging')
 router.register("agent", AgentModelViewSet, basename='messaging')

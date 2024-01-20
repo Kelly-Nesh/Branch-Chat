@@ -7,9 +7,10 @@ from .models import Message
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
-        self.group_name = self.scope["url_route"]["kwargs"]["group_name"]
-        if Message.objects.filter(conversation_id=self.group_name)\
-            .order_by("-id").first().complete:
+        self.group_name = self.scope["url_route"]["kwargs"]["chat_id"]
+        message = Message.objects.filter(conversation_id=self.group_name)\
+            .order_by("-id").first()
+        if message and message.complete:
             return
         atos(self.channel_layer.group_add)(self.group_name, self.channel_name)
         self.accept()

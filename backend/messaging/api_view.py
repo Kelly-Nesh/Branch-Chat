@@ -6,18 +6,18 @@ from rest_framework.response import Response
 
 class MessageViewSet(ModelViewSet):
     serializer_class = MessageSerializer
-    lookup_field = 'convo_id'
+    lookup_field = 'chat_id'
 
     def get_queryset(self):
         queryset = Message.objects.filter(complete=False, sender__contains='user').order_by(
             "-id")
         new = []
-        convo_ids = []
+        chat_ids = []
         for i in queryset:
-            if i.conversation_id not in convo_ids:
+            if i.conversation_id not in chat_ids:
                 new.append(i)
                 # print(i.hasAgent)
-                convo_ids.append(i.conversation_id)
+                chat_ids.append(i.conversation_id)
 
         return MessageSerializer(instance=new, many=True).data
 
@@ -32,7 +32,7 @@ class MessageViewSet(ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         Message.objects.filter(
-            conversation_id=kwargs['convo_id']).update(complete=True)
+            conversation_id=kwargs['chat_id']).update(complete=True)
 
         return Response({"complete": True})
 
@@ -41,10 +41,10 @@ class MessageRetrieveHistory(ReadOnlyModelViewSet):
     serializer_class = MessageSerializer
 
     def get_queryset(self):
-        convo_id = self.request.GET['convo_id']
+        chat_id = self.request.GET['chat_id']
         queryset = Message.objects.filter(
-            conversation_id=convo_id).order_by("id")
-        # print(queryset, convo_id)
+            conversation_id=chat_id).order_by("id")
+        # print(queryset, chat_id)
         return MessageSerializer(queryset, many=True).data
 
 
