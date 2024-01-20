@@ -4,23 +4,23 @@ import App from "./App.jsx";
 import "./index.css";
 import { createBrowserRouter, Route, RouterProvider } from "react-router-dom";
 import Chat from "./components/chat.jsx";
-import Agent, { Login } from "./components/agent.jsx";
+import Agent from "./components/agent.jsx";
+import { AgentForm, CustomerForm } from "./components/forms.jsx";
 
 const router = createBrowserRouter([
-  { path: "", element: <App /> },
-  { path: "chat/:group_name/", element: <Chat caller="user"/> },
+  { path: "", element: <CustomerForm /> },
+  { path: "chat/", element: <App /> },
+  { path: "chat/:convo_id/", element: <Chat caller="user" /> },
   {
     path: "agent/",
     children: [
-      { path: "", element: <Login /> },
-      { path: "support", element: <Agent /> },
-      { path: "support/:group_name/", element: <Chat caller="agent"/> },
+      { path: "", element: <AgentForm /> },
+      { path: "support/", element: <Agent /> },
+      { path: "support/:convo_id/", element: <Chat caller="agent" /> },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  <RouterProvider router={router} />
 );
