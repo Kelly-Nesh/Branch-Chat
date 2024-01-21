@@ -24,14 +24,14 @@ export function timestamp() {
 function App() {
   const [topic, setTopic] = useState();
   const [message, setMessage] = useState();
-  const [alert, setAlert] = useState();
+  const [notification, setNotification] = useState();
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
 
   async function submitTopic(e) {
     e.preventDefault();
     if (!message || !topic) {
-      setAlert("All fields required");
+      setNotification("All fields required");
       return;
     }
     const data = {
@@ -41,7 +41,7 @@ function App() {
       message: message,
     };
     localStorage.setItem("topic", topic);
-    localStorage.setItem("sender", data.sender);
+    notification(topic); return;
     axios
       .post(backend, data)
       .then((resp) => {
@@ -56,11 +56,11 @@ function App() {
       <Navigator name={""} func={setShow} flag={show} />
 
       <Row>
-        {alert && (
+        {notification && (
           <Row>
             <Col>
               <Alert variant="danger" className="d-block m-1 mx-auto">
-                {alert}
+                {notification}
               </Alert>
             </Col>
           </Row>
@@ -78,7 +78,7 @@ function App() {
               className="mb-2"
               onChange={(e) => {
                 setTopic(e.target.value);
-                alert && setAlert()
+                notification && setNotification()
               }}
             >
               <option>Select topic</option>
@@ -97,7 +97,7 @@ function App() {
               size="100"
               required
               onChange={(e) => {
-                alert && setAlert()
+                notification && setNotification()
                 setMessage(e.target.value);
               }}
             />
