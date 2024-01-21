@@ -23,7 +23,7 @@ import {
     Connects, receives and sends data from the backend
       websocket
   */
-const cl = console.log
+const cl = console.log;
 function Chatformat({ chats, caller, messageref }) {
   const mapped = chats.map((chat, idx) => {
     if (caller === chat.sender) {
@@ -64,7 +64,6 @@ function Chatformat({ chats, caller, messageref }) {
 function createWebSocket(chat_id) {
   let ws_url = "ws://localhost:8000/ws/support/" + chat_id + "/";
   return useWebSocket(ws_url, {
-
     shouldReconnect: () => {
       // setShow(true);
       return true;
@@ -93,13 +92,20 @@ export default function Chat({ caller }) {
   const [chatlog, setChatLog] = useState([]);
   const chat_id = useParams().chat_id;
   const [show, setShow] = useState(false);
-  const [sender, setSender] = useState(localStorage.getItem("sender"));
+  const [sender, setSender] = useState();
   const navigate = useNavigate();
   const { sendJsonMessage, lastJsonMessage, readyState } = useCallback(
     createWebSocket(chat_id)
   );
 
   useEffect(() => {
+    if (!sender) {
+      const agent_or_customer =
+        caller === "user"
+          ? sessionStorage.getItem("customer_id")
+          : sessionStorage.getItem("emp_id");
+      setSender(agent_or_customer);
+    }
     if (lastJsonMessage !== null) {
       if (lastJsonMessage.complete) {
         setEnd(lastJsonMessage.complete);
@@ -126,13 +132,7 @@ export default function Chat({ caller }) {
       setAlert(true);
       return;
     }
-    const topic = localStorage.getItem("topic");
-    const sender =
-      caller === "user"
-        ? localStorage.getItem("customer_id")
-        : localStorage.getItem("emp_id");
-    setSender(sender);
-    cl(sender);
+    const topic = sessionStorage.getItem("topic");
     const hasAgent =
       !sender.startsWith("user") || chatlog[chatlog.length - 1].hasAgent;
     const data = {
