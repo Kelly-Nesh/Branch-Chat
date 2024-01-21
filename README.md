@@ -147,7 +147,9 @@ The customer-facing UI is more interactive by leveraging websockets technology, 
 ## **Setup**
 
 ### **Frontend**
+
 From the project root directory, in the command line interface:
+
 ```
 cd frontend
 
@@ -167,7 +169,9 @@ Create a database named `branch`
 Grant all privileges on the `branch` database to the user `branch`.
 
 ### **Backend**
+
 From the project root directory, in the command line interface:
+
 ```
 sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
 
