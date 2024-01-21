@@ -91,6 +91,9 @@ export default function Chat({ caller }) {
   const chat_id = useParams().chat_id;
   const [show, setShow] = useState(false);
   const [sender, setSender] = useState();
+  const [username, setUsername] = useState(
+    sessionStorage.getItem("customer_username")
+  );
   const navigate = useNavigate();
   const { sendJsonMessage, lastJsonMessage, readyState } = useCallback(
     createWebSocket(chat_id)
@@ -98,15 +101,18 @@ export default function Chat({ caller }) {
 
   useEffect(() => {
     if (!sender) {
-      const agent_or_customer =
-        caller === "user"
-          ? sessionStorage.getItem("customer_id")
-          : sessionStorage.getItem("emp_id");
+      let agent_or_customer;
+      if (caller === "user") {
+        agent_or_customer = sessionStorage.getItem("customer_id");
+      } else {
+        agent_or_customer = sessionStorage.getItem("emp_id");
+        setUsername(agent_or_customer);
+      }
       setSender(agent_or_customer);
     }
     if (lastJsonMessage !== null) {
       if (lastJsonMessage.complete) {
-        setAlert(false)
+        setAlert(false);
         setEnd(lastJsonMessage.complete);
         return;
       }
@@ -169,22 +175,22 @@ export default function Chat({ caller }) {
         <MDBCol md="10" lg="8" xl="6">
           <MDBCard id="chat2" style={{ borderRadius: "15px" }}>
             <MDBCardHeader className="d-flex justify-content-between align-items-center p-3">
-              <h5 className="mb-0">BranchChat | {sender}</h5>
+              <h5 className="mb-0">BranchChat | {username}</h5>
               <>
                 {msg_alert && (
                   <Alert variant="warning" className="alert">
                     Write a message to send
                   </Alert>
                 )}
-              {sender && sender.startsWith("user") === false && (
-                <Button
-                  variant="primary"
-                  disabled={readyState !== ReadyState.OPEN}
-                  onClick={handleEnd}
-                >
-                  End conversation
-                </Button>
-              )}
+                {sender && sender.startsWith("user") === false && (
+                  <Button
+                    variant="primary"
+                    disabled={readyState !== ReadyState.OPEN}
+                    onClick={handleEnd}
+                  >
+                    End conversation
+                  </Button>
+                )}
                 {end && (
                   <Alert className="alert" variant="danger">
                     Conversation closed. <Link to="/chat/">Home</Link>
@@ -211,8 +217,8 @@ export default function Chat({ caller }) {
                 id="exampleFormControlInput1"
                 placeholder="Type message"
                 ref={inputref}
-                onFocus={()=>{
-                  alert && setAlert(false)
+                onFocus={() => {
+                  alert && setAlert(false);
                 }}
               ></input>
               <Button
