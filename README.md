@@ -219,8 +219,8 @@ Grant all privileges on the `branch` database to the user `branch`.
 
 ### **Backend**
 
-**Note: This should be run on a different terminal from the one running
-the frontend server**
+>**Note: This should be run on a different terminal from the one running
+>the frontend server**
 
 From the project root directory, in the command line interface:
 
