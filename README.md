@@ -123,7 +123,7 @@ The customer-facing UI is more interactive by leveraging websockets technology, 
 
 ### Scaling
 
-<p>With the current setup of the backend and frontend, the app can be easily scaled as the customer base grows. Some include: </p>
+With the current setup of the backend and frontend, the app can be easily scaled as the customer base grows. Some include:
 
 - Implement websockets instead of polling from the database
 
