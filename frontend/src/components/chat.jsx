@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
@@ -65,7 +64,6 @@ function createWebSocket(chat_id) {
   let ws_url = "ws://localhost:8000/ws/support/" + chat_id + "/";
   return useWebSocket(ws_url, {
     shouldReconnect: () => {
-      // setShow(true);
       return true;
     },
     reconnectAttempts: 5,
@@ -108,6 +106,7 @@ export default function Chat({ caller }) {
     }
     if (lastJsonMessage !== null) {
       if (lastJsonMessage.complete) {
+        setAlert(false)
         setEnd(lastJsonMessage.complete);
         return;
       }
@@ -171,6 +170,12 @@ export default function Chat({ caller }) {
           <MDBCard id="chat2" style={{ borderRadius: "15px" }}>
             <MDBCardHeader className="d-flex justify-content-between align-items-center p-3">
               <h5 className="mb-0">BranchChat | {sender}</h5>
+              <>
+                {msg_alert && (
+                  <Alert variant="warning" className="alert">
+                    Write a message to send
+                  </Alert>
+                )}
               {sender && sender.startsWith("user") === false && (
                 <Button
                   variant="primary"
@@ -180,24 +185,18 @@ export default function Chat({ caller }) {
                   End conversation
                 </Button>
               )}
+                {end && (
+                  <Alert className="alert" variant="danger">
+                    Conversation closed. <Link to="/chat/">Home</Link>
+                  </Alert>
+                )}
+              </>
             </MDBCardHeader>
             <Container
               className="overflow-scroll"
               style={{ position: "relative", height: "60svh" }}
             >
               <MDBCardBody>
-                <>
-                  {end && (
-                    <Alert className="alert" variant="danger">
-                      Conversation closed.
-                    </Alert>
-                  )}
-                  {msg_alert && (
-                    <Alert variant="warning" className="alert">
-                      Write a message to send
-                    </Alert>
-                  )}
-                </>
                 <Chatformat
                   chats={chatlog}
                   caller={sender}
@@ -212,6 +211,9 @@ export default function Chat({ caller }) {
                 id="exampleFormControlInput1"
                 placeholder="Type message"
                 ref={inputref}
+                onFocus={()=>{
+                  alert && setAlert(false)
+                }}
               ></input>
               <Button
                 variant="primary"
