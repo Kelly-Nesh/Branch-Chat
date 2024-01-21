@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,32 +19,32 @@ import {
 
 const Agent = () => {
   const [chats, setChats] = useState([]);
-  const [interval, setnterval] = useState(5000);
   const [filter, setFilter] = useState();
   const [show, setShow] = useState(false);
   const [agent, setAgent] = useState();
   const [hasAgent, setHasAgent] = useState(false);
-  const [pause, setPause] = useState(false);
-  const [intervalinteger, setIntervalInteger] = useState();
+  const POLLING_INTERVAL = 5000;
 
   useEffect(() => {
-    /* called immediately after render */
     setAgent(sessionStorage.getItem("emp_id"));
+    /* First Time */
     axios.get(backend).then((r) => {
       setChats(r.data);
     });
-    /* called after intervals */
-    retrieve_chats();
+
+    /* After interval */
+    const intervalID = setInterval(() => {
+      retrieve_chats();
+    }, POLLING_INTERVAL);
+
+    return () => clearInterval(intervalID);
   }, []);
 
-  const retrieve_chats = useCallback(async () => {
-    const int = setInterval(() => {
-      axios.get(backend).then((r) => {
-        setChats(r.data);
-      });
-    }, interval);
-    setIntervalInteger(int);
-  });
+  async function retrieve_chats() {
+    await axios.get(backend).then((r) => {
+      setChats(r.data);
+    });
+  }
 
   if (!chats) return <></>;
   const filters = [
@@ -70,7 +70,6 @@ const Agent = () => {
                 chats={chats}
                 filter={filter}
                 hasAgent={hasAgent}
-                intervalinteger={intervalinteger}
               />
             </Row>
           </Container>
@@ -119,7 +118,7 @@ export default Agent;
 
 const cl = console.log;
 
-function ChatListFormat({ chats, filter, hasAgent, intervalinteger }) {
+function ChatListFormat({ chats, filter, hasAgent }) {
   const navigate = useNavigate();
   let filtered_chats;
   if (filter) {
@@ -132,10 +131,9 @@ function ChatListFormat({ chats, filter, hasAgent, intervalinteger }) {
     });
   } else filtered_chats = chats;
 
-  function setData(topic, user, conversation_id) {
+  function setData(topic, conversation_id) {
     sessionStorage.setItem("topic", topic);
     navigate(conversation_id);
-    clearInterval(intervalinteger);
   }
   return filtered_chats.map((e, idx) => {
     let msg = e.message;
@@ -154,7 +152,7 @@ function ChatListFormat({ chats, filter, hasAgent, intervalinteger }) {
             <Button
               variant="light"
               onClick={() => {
-                setData(e.topic, e.user_id, e.conversation_id);
+                setData(e.topic, e.conversation_id);
               }}
             >
               Respond
