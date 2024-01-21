@@ -36,12 +36,11 @@ function App() {
     }
     const data = {
       timestamp: timestamp(),
-      sender: localStorage.getItem("customer_id"),
+      sender: sessionStorage.getItem("customer_id"),
       topic: topic,
       message: message,
     };
-    localStorage.setItem("topic", topic);
-    notification(topic); return;
+    sessionStorage.setItem("topic", topic);
     axios
       .post(backend, data)
       .then((resp) => {
