@@ -134,7 +134,6 @@ function ChatListFormat({ chats, filter, hasAgent, intervalinteger }) {
 
   function setData(topic, user, conversation_id) {
     sessionStorage.setItem("topic", topic);
-    sessionStorage.setItem("myuser", user);
     navigate(conversation_id);
     clearInterval(intervalinteger);
   }
