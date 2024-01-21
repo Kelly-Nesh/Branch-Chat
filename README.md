@@ -191,6 +191,10 @@ source chat_env/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
+# Setup database
+python manage.py makemigrations
+python manage.py migrate
+
 # Run Dev server
 python manage.py runserver
 ```
