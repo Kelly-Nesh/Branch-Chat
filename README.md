@@ -5,23 +5,19 @@ This is a simple and scalable Branch customer service messaging web application.
 # Table of Contents
 
 <ol>
-<li><h3><a href="#project">Project Requirements</a></h3></li>
+<li><h3><a href="#project-requirements-1">Project Requirements</a></h3></li>
+<li><h3><a href="#project-description-1">Project Description</a></h3></li>
     <ul>
-     <li><h3><a href="#req-basic">Basic</a></h3></li>
-     <li><h3><a href="#req-extended">Extended</a></h3></li>
+     <li><h3><a href="#technologies-1">Technologies</a></h3></li>
+     <li><h3><a href="#description-1">Description</a></h3></li>
     </ul>
-<li><h3><a href="#project-description">Project Description</a></h3></li>
-    <ul>
-     <li><h3><a href="#technologies">Technologies</a></h3></li>
-     <li><h3><a href="#description">Description</a></h3></li>
-    </ul>
-<li><h3><a href="#implemented-features">Implemented Features</a></h3></li>
-<li><h3><a href="#installation">Installation</a></h3></li>
+<li><h3><a href="#implemented-features-1">Implemented Features</a></h3></li>
+<li><h3><a href="#installation-1">Installation</a></h3></li>
 </ol>
 
-<h1 id="project">Project Requirements</h1>
+<h1 id="project-requirements-1">Project Requirements</h1>
 
-<h2 id="req-basic">Basic Requirements</h2>
+<h2 id="basic-requirements">Basic Requirements</h2>
 
 1. Allow a team of agents to respond to
    incoming messages from (potentially many) customers in a streamlined fashion.
@@ -38,7 +34,7 @@ This is a simple and scalable Branch customer service messaging web application.
 
 5. Record a video of your application’s functioning and follow it up with a small code walkthrough covering only the crucial aspects. Ensure that the video is not longer than 5 - 6 minutes.
 
-<h2 id="req-extended">Extended features</h2>
+<h2 id="extended-features">Extended features</h2>
 
 1. Figure out a scheme to help agents divide work amongst themselves, and to prevent multiple agents working on the same message at once.
 
@@ -54,11 +50,11 @@ This is a simple and scalable Branch customer service messaging web application.
 
 6. Make the agent UI (and/or the customer-facing UI) more interactive by leveraging websockets or similar technology, so that new incoming messages can show up in real time.
 
-<h1 id="project-description">Project Description</h1>
+<h1 id="project-description-1">Project Description</h1>
 
 The project has the backend built with Django and the Django REST framework while the frontend uses React
 
-## Technologies
+<h2 id="technologies-1">Technologies</h2>
 
 ### **Backend**
 
@@ -80,7 +76,7 @@ The project has the backend built with Django and the Django REST framework whil
 - CSS
 - Bootstrap
 
-**<h2 id="description">Description</h2>**
+**<h2 id="description-1">Description</h2>**
 
 - The messaging app used django for the backend and react for the frontend part.
 
@@ -94,7 +90,7 @@ The project has the backend built with Django and the Django REST framework whil
 
 - React-use-websockets is used for implementing websockets in the frontend part.
 
-**<h2 id="implemented-features">Implemented Features</h2>**
+**<h2 id="implemented-features-1">Implemented Features</h2>**
 
 ### Basic features
 
@@ -138,7 +134,7 @@ The customer-facing UI is more interactive by leveraging websockets technology, 
 
 - Database can be distributed increasing capacity to handle requests.
 
-<h2 id="installation">Installation</h2>
+<h2 id="installation-1">Installation</h2>
 
 ### Dependencies
 
