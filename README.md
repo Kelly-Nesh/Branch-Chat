@@ -170,6 +170,8 @@ Grant all privileges on the `branch` database to the user `branch`.
 
 ### **Backend**
 
+**Note: This should be run on a different terminal from the one running the frontend server**
+
 From the project root directory, in the command line interface:
 
 ```
@@ -197,7 +199,8 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-You can now view and interact with the website at [localhost:5173](localhost:5173).
+Having both the frontend and backend servers running, 
+You can now view and interact with the website at [localhost:5173](http://localhost:5173).
 
 **From the menu on the right:**
 
