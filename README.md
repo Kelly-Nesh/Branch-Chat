@@ -4,20 +4,19 @@ This is a simple and scalable Branch customer service messaging web application.
 
 # Table of Contents
 
-<ol>
-<li><h3><a href="#project-requirements-1">Project Requirements</a></h3></li>
-<li><h3><a href="#project-description-1">Project Description</a></h3></li>
-    <ul>
-     <li><h3><a href="#technologies-1">Technologies</a></h3></li>
-     <li><h3><a href="#description-1">Description</a></h3></li>
-    </ul>
-<li><h3><a href="#implemented-features-1">Implemented Features</a></h3></li>
-<li><h3><a href="#installation-1">Installation</a></h3></li>
-</ol>
+### [Project Requirements](#project-requirements-1)
 
-<h1 id="project-requirements-1">Project Requirements</h1>
+### [Project Description](#project-description-1)
+  - ### [Technologies](#technologies-1)
+  - ### [Description](#description-1)
 
-<h2 id="basic-requirements">Basic Requirements</h2>
+### [Implemented Features](#implemented-features-1)
+
+### [Installation](#installation-1)
+
+## Project Requirements
+
+## Basic
 
 1. Allow a team of agents to respond to
    incoming messages from (potentially many) customers in a streamlined fashion.
@@ -34,7 +33,7 @@ This is a simple and scalable Branch customer service messaging web application.
 
 5. Record a video of your application’s functioning and follow it up with a small code walkthrough covering only the crucial aspects. Ensure that the video is not longer than 5 - 6 minutes.
 
-<h2 id="extended-features">Extended features</h2>
+## Extended
 
 1. Figure out a scheme to help agents divide work amongst themselves, and to prevent multiple agents working on the same message at once.
 
@@ -50,11 +49,11 @@ This is a simple and scalable Branch customer service messaging web application.
 
 6. Make the agent UI (and/or the customer-facing UI) more interactive by leveraging websockets or similar technology, so that new incoming messages can show up in real time.
 
-<h1 id="project-description-1">Project Description</h1>
+## Project Description
 
 The project has the backend built with Django and the Django REST framework while the frontend uses React
 
-<h2 id="technologies-1">Technologies</h2>
+## Technologies
 
 ### **Backend**
 
@@ -76,7 +75,7 @@ The project has the backend built with Django and the Django REST framework whil
 - CSS
 - Bootstrap
 
-**<h2 id="description-1">Description</h2>**
+## Description
 
 - The messaging app used django for the backend and react for the frontend part.
 
@@ -90,7 +89,7 @@ The project has the backend built with Django and the Django REST framework whil
 
 - React-use-websockets is used for implementing websockets in the frontend part.
 
-**<h2 id="implemented-features-1">Implemented Features</h2>**
+## Implemented Features
 
 ### Basic features
 
@@ -134,7 +133,7 @@ The customer-facing UI is more interactive by leveraging websockets technology, 
 
 - Database can be distributed increasing capacity to handle requests.
 
-<h2 id="installation-1">Installation</h2>
+## Installation
 
 ### Dependencies
 
