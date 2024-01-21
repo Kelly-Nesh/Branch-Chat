@@ -10,12 +10,12 @@ This is a simple and scalable Branch customer service messaging web application.
      <li><h3><a href="#req-basic">Basic</a></h3></li>
      <li><h3><a href="#req-extended">Extended</a></h3></li>
     </ul>
-<li><h3><a href="#description">Project Description</a></h3></li>
+<li><h3><a href="#project-description">Project Description</a></h3></li>
     <ul>
      <li><h3><a href="#technologies">Technologies</a></h3></li>
-     <li><h3><a href="#desc">Description</a></h3></li>
+     <li><h3><a href="#description">Description</a></h3></li>
     </ul>
-<li><h3><a href="#features">Implemented Features</a></h3></li>
+<li><h3><a href="#implemented-features">Implemented Features</a></h3></li>
 <li><h3><a href="#installation">Installation</a></h3></li>
 </ol>
 
@@ -54,7 +54,7 @@ This is a simple and scalable Branch customer service messaging web application.
 
 6. Make the agent UI (and/or the customer-facing UI) more interactive by leveraging websockets or similar technology, so that new incoming messages can show up in real time.
 
-<h1 id="description">Project Description</h1>
+<h1 id="project-description">Project Description</h1>
 
 The project has the backend built with Django and the Django REST framework while the frontend uses React
 
@@ -80,7 +80,7 @@ The project has the backend built with Django and the Django REST framework whil
 - CSS
 - Bootstrap
 
-**<h2 id="desc">Description</h2>**
+**<h2 id="description">Description</h2>**
 
 - The messaging app used django for the backend and react for the frontend part.
 
@@ -94,7 +94,7 @@ The project has the backend built with Django and the Django REST framework whil
 
 - React-use-websockets is used for implementing websockets in the frontend part.
 
-**<h2 id="features">Implemented Features</h2>**
+**<h2 id="implemented-features">Implemented Features</h2>**
 
 ### Basic features
 
