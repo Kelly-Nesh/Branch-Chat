@@ -33,6 +33,7 @@ export function CustomerForm() {
     };
     axios.post(backend + "customer/", data).then((id) => {
       sessionStorage.setItem("customer_id", id.data.user_id);
+      sessionStorage.setItem("customer_username", username)
       navigate("chat/");
     });
   }
