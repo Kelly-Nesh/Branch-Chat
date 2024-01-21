@@ -2,6 +2,8 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from .serializers import (MessageSerializer, Message, Agent,
                           Customer, AgentSerializer, CustomerSerializer)
 from rest_framework.response import Response
+from django.forms.models import model_to_dict
+import json
 
 
 class MessageViewSet(ModelViewSet):
@@ -62,3 +64,11 @@ class AgentModelViewSet(ModelViewSet):
     def create(self, request):
         emp_id = Agent.objects.get_or_create(**request.data)[0].employee_id
         return Response({"emp_id": emp_id})
+
+
+class ResumeViewSet(ReadOnlyModelViewSet):
+    serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        data = Message.objects.filter(complete=False, sender=self.request.GET['user_id']).order_by("-id")#.first()
+        return MessageSerializer(data, many=True).data

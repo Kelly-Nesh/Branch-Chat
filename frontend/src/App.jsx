@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
+import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +66,11 @@ function App() {
           </Row>
         )}
         <Col sm={12} className="mx-auto mb-3">
-          <h3>Welcome to branch support.<br/>Need help? Talk to an agent.</h3>
+          <h3>
+            Welcome to branch support.
+            <br />
+            Need help? Talk to an agent.
+          </h3>
         </Col>
       </Row>
       <Row>
@@ -77,7 +82,7 @@ function App() {
               className="mb-2"
               onChange={(e) => {
                 setTopic(e.target.value);
-                notification && setNotification()
+                notification && setNotification();
               }}
             >
               <option>Select topic</option>
@@ -96,7 +101,7 @@ function App() {
               size="100"
               required
               onChange={(e) => {
-                notification && setNotification()
+                notification && setNotification();
                 setMessage(e.target.value);
               }}
             />
@@ -115,6 +120,7 @@ function App() {
         </Col>
         <MenuBlock show={show} />
       </Row>
+      <ResumeChat />
     </Container>
   );
 }
@@ -127,9 +133,7 @@ export function Navigator(props) {
       style={{ background: "white", maxHeight: "6rem" }}
     >
       <img style={{ height: "4rem", width: "15rem" }} src={logo} />
-      <h3 className="d-inline header">
-        {props.name && '|' + props.name}
-      </h3>
+      <h3 className="d-inline header">{props.name && "|" + props.name}</h3>
       <div className="menu-bars" onClick={() => props.func(!props.flag)}>
         <span></span>
         <span></span>
@@ -171,5 +175,44 @@ export function MenuBlock({ show }) {
         </div>
       </div>
     </Col>
+  );
+}
+
+function ResumeChat() {
+  /* Enable a user to resume an incomplete chat */
+  const [message, setMessage] = useState();
+  const id = useRef(sessionStorage.getItem("customer_id"));
+  const backend = "http://localhost:8000/api/resume?user_id=";
+  const url = backend + id.current;
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios
+      .get(url)
+      .then((r) => {
+        setMessage(r.data[0]);
+      })
+      .catch((e) => console.log(e));
+  });
+  if (!message) return <></>;
+  return (
+    <Row className="my-3">
+      <Col md={6}>
+        <p className="h4">Resume previous Chat</p>
+        <Card
+          bg="secondary"
+          onClick={() => {
+            navigate(message.conversation_id);
+          }}
+          className="m-3 p-3"
+          style={{ cursor: "pointer" }}
+        >
+          <Card.Title>{message.topic}</Card.Title>
+          <Card.Body>
+            <Card.Text>{message.message}</Card.Text>
+            <Card.Subtitle>{message.timestamp}</Card.Subtitle>
+          </Card.Body>
+        </Card>
+      </Col>
+    </Row>
   );
 }
