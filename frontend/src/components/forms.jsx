@@ -20,19 +20,19 @@ export function CustomerForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    const val1 = ref.current.value;
-    const val2 = ref2.current.value;
+    const username = ref.current.value;
+    const password = ref2.current.value;
 
-    if (!val1 || !val2) {
+    if (!username || !password) {
       setAlert(true);
       return;
     }
     const data = {
-      username: val1,
-      password: val2,
+      username: username,
+      password: password,
     };
     axios.post(backend + "customer/", data).then((id) => {
-      localStorage.setItem("customer_id", id.data.user_id);
+      sessionStorage.setItem("customer_id", id.data.user_id);
       navigate("chat/");
     });
   }
@@ -81,19 +81,19 @@ export function AgentForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    const val1 = ref.current.value;
-    const val2 = ref2.current.value;
+    const username = ref.current.value;
+    const password = ref2.current.value;
 
-    if (!val1 || !val2) {
+    if (!username || !password) {
       setAlert(true);
       return;
     }
     const data = {
-      employee_id: val1,
-      password: val2,
+      employee_id: username,
+      password: password,
     };
     axios.post(backend + "agent/", data).then((id) => {
-      localStorage.setItem("emp_id", id.data.emp_id);
+      sessionStorage.setItem("emp_id", id.data.emp_id);
       navigate("support/");
     });
   }
