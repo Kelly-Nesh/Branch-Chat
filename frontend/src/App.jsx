@@ -65,8 +65,8 @@ function App() {
             </Col>
           </Row>
         )}
-        <Col sm={6} className="mx-auto mb-3">
-          <h3>Need help? Talk to an agent.</h3>
+        <Col sm={12} className="mx-auto mb-3">
+          <h3>Welcome to branch support.<br/>Need help? Talk to an agent.</h3>
         </Col>
       </Row>
       <Row>
@@ -78,7 +78,7 @@ function App() {
               className="mb-2"
               onChange={(e) => {
                 setTopic(e.target.value);
-                alert ? setAlert() : "";
+                alert && setAlert()
               }}
             >
               <option>Select topic</option>
@@ -97,7 +97,7 @@ function App() {
               size="100"
               required
               onChange={(e) => {
-                alert ? setAlert() : "";
+                alert && setAlert()
                 setMessage(e.target.value);
               }}
             />
@@ -129,8 +129,7 @@ export function Navigator(props) {
     >
       <img style={{ height: "4rem", width: "15rem" }} src={logo} />
       <h3 className="d-inline header">
-        {" "}
-        {props.name ? " | " + props.name : ""}
+        {props.name && '|' + props.name}
       </h3>
       <div className="menu-bars" onClick={() => props.func(!props.flag)}>
         <span></span>
