@@ -1,10 +1,9 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import "./agent.css";
@@ -15,9 +14,6 @@ import {
   MDBCardTitle,
   MDBCardHeader,
   MDBCardText,
-  MDBRow,
-  MDBCol,
-  MDBBtn,
   MDBCardSubTitle,
 } from "mdb-react-ui-kit";
 
@@ -33,7 +29,7 @@ const Agent = () => {
 
   useEffect(() => {
     /* called immediately after render */
-    setAgent(localStorage.getItem("emp_id"));
+    setAgent(sessionStorage.getItem("emp_id"));
     axios.get(backend).then((r) => {
       setChats(r.data);
     });
@@ -137,8 +133,8 @@ function ChatListFormat({ chats, filter, hasAgent, intervalinteger }) {
   } else filtered_chats = chats;
 
   function setData(topic, user, conversation_id) {
-    localStorage.setItem("topic", topic);
-    localStorage.setItem("myuser", user);
+    sessionStorage.setItem("topic", topic);
+    sessionStorage.setItem("myuser", user);
     navigate(conversation_id);
     clearInterval(intervalinteger);
   }
@@ -156,14 +152,14 @@ function ChatListFormat({ chats, filter, hasAgent, intervalinteger }) {
 
             <MDBCardTitle>{e.sender}</MDBCardTitle>
             <MDBCardText>{msg}</MDBCardText>
-            <MDBBtn
-              bg="light"
+            <Button
+              variant="light"
               onClick={() => {
                 setData(e.topic, e.user_id, e.conversation_id);
               }}
             >
               Respond
-            </MDBBtn>
+            </Button>
             <hr className="hr" />
             <MDBCardSubTitle>{e.timestamp.split(" ")[1]}</MDBCardSubTitle>
           </MDBCardBody>
