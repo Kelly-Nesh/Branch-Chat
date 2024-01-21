@@ -164,9 +164,12 @@ framework while the frontend uses React
     -   This also helps in providing some time for the agents to choose
         from already received messages before new ones appear.
 
-The customer-facing UI is more interactive by leveraging websockets
-technology, such that new incoming messages in the customer-agent chat
-show up in real time.
+-   The customer-facing UI is more interactive by leveraging websockets
+    technology, such that new incoming messages in the customer-agent chat
+    show up in real time.
+
+-   Added an extra feature where the customer can resume a previous
+    conversation which was not complete.
 
 ### Scaling
 
@@ -186,11 +189,9 @@ easily scaled as the customer base grows. Some include:
 
 ### Dependencies
 
--   **[Python
-    v3.11](https://www.makeuseof.com/install-python-ubuntu/#use-deadsnakes-ppa-to-install-python-3-12-on-ubuntu)**
+-   **[Python v3.11](https://www.makeuseof.com/install-python-ubuntu/#use-deadsnakes-ppa-to-install-python-3-12-on-ubuntu)**
 
--   **[Node and
-    npm](https://github.com/nodesource/distributions#nodejs)**
+-   **[Node and npm](https://github.com/nodesource/distributions#nodejs)**
 
 -   **[MySQL](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-22-04)**
 
