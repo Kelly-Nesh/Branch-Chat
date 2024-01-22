@@ -226,7 +226,7 @@ From the project root directory, in the command line interface:
 
     sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
 
-    # Package mananager and Virtual environment
+    # Package manager and Virtual environment
     sudo apt install -y python3-pip python3-venv
 
     cd backend
@@ -244,6 +244,9 @@ From the project root directory, in the command line interface:
     python manage.py makemigrations
     python manage.py migrate
 
+    # Load CSV file data into database
+    python manage.py load_csv
+    
     # Run Dev server
     python manage.py runserver
 
