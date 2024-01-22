@@ -6,6 +6,11 @@ from django.forms.models import model_to_dict
 import json
 
 
+class MessageReadonlyAll(ReadOnlyModelViewSet):
+    serializer_class = MessageSerializer
+    queryset = Message.objects.all()
+
+
 class MessageViewSet(ModelViewSet):
     serializer_class = MessageSerializer
     lookup_field = 'chat_id'
@@ -52,6 +57,7 @@ class MessageRetrieveHistory(ReadOnlyModelViewSet):
 
 class CustomerModelViewSet(ModelViewSet):
     serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
 
     def create(self, request):
         user_id = Customer.objects.get_or_create(**request.data)[0].user_id
@@ -60,6 +66,7 @@ class CustomerModelViewSet(ModelViewSet):
 
 class AgentModelViewSet(ModelViewSet):
     serializer_class = AgentSerializer
+    queryset = Agent.objects.all()
 
     def create(self, request):
         emp_id = Agent.objects.get_or_create(**request.data)[0].employee_id
@@ -70,5 +77,6 @@ class ResumeViewSet(ReadOnlyModelViewSet):
     serializer_class = MessageSerializer
 
     def get_queryset(self):
-        data = Message.objects.filter(complete=False, sender=self.request.GET['user_id']).order_by("-id")#.first()
+        data = Message.objects.filter(
+            complete=False, sender=self.request.GET['user_id']).order_by("-id")  # .first()
         return MessageSerializer(data, many=True).data
