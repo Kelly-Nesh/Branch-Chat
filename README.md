@@ -273,3 +273,8 @@ and interact with the website at
     -   Chat page.
         -   Send messages
         -   End conversation
+### API
+The main API endpoints are
+-  `all/messages` - Lists all messages in the database
+-  `customer` - Lists all customers in the database
+-  `agent` - Lists all agents in the database
