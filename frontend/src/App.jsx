@@ -192,7 +192,7 @@ function ResumeChat() {
         setMessage(r.data[0]);
       })
       .catch((e) => console.log(e));
-  });
+  }, []);
   if (!message) return <></>;
   return (
     <Row className="my-3">
